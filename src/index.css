@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+
+@import './ui/design-system/tokens/colors.css';
+@import './ui/design-system/tokens/typography.css';
+@import './ui/design-system/tokens/radius.css';
+@import './ui/design-system/tokens/shadows.css';
+@import './ui/design-system/tokens/motion.css';
+@import './ui/design-system/tokens/themes.css';
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-contrast: var(--ink-contrast);
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-sheet: var(--shadow-sheet);
+
+  --ease-out: var(--ease-out);
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--ink);
+    background: #e8e5de;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+    color: inherit;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(28, 26, 22, 0.15);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(28, 26, 22, 0.25);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

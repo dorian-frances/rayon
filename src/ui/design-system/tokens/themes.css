@@ -1,0 +1,27 @@
+/**
+ * Thèmes visuels — 3 directions, switch via [data-theme="..."] sur <html>.
+ * Chacun ne change que les tokens identitaires (police serif, bg, card, ink).
+ * Accent et radius restent constants sauf override explicite.
+ */
+
+/* editorial = défaut (déjà posé par colors/typography) */
+[data-theme='editorial'] {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --bg: #faf8f3;
+  --card: #fffcf6;
+  --ink: #1c1a16;
+}
+
+[data-theme='warm'] {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --bg: #f4eee2;
+  --card: #fbf6ea;
+  --ink: #2a231a;
+}
+
+[data-theme='minimal'] {
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --bg: #f5f4f1;
+  --card: #ffffff;
+  --ink: #151413;
+}

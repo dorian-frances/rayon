@@ -1,0 +1,11 @@
+:root {
+  --font-serif: 'Fraunces', 'Canela', Georgia, serif;
+  --font-sans:
+    'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: -0.01em;
+  --tracking-wide: 0.02em;
+  --tracking-widest: 0.14em;
+}

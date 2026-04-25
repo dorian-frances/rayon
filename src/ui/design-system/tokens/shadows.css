@@ -1,0 +1,6 @@
+:root {
+  --shadow-card: 0 12px 30px rgba(28, 26, 22, 0.08);
+  --shadow-card-soft: 0 8px 20px rgba(28, 26, 22, 0.05);
+  --shadow-sheet: 0 20px 60px rgba(28, 26, 22, 0.25);
+  --shadow-popover: 0 12px 40px rgba(28, 26, 22, 0.18), 0 0 0 1px rgba(28, 26, 22, 0.08);
+}

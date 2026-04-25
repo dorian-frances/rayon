@@ -1,0 +1,23 @@
+/**
+ * Design tokens — base palette.
+ * Les thèmes (themes.css) overrident les valeurs selon [data-theme].
+ */
+
+:root {
+  --ink: #1c1a16;
+  --bg: #faf8f3;
+  --card: #fffcf6;
+  --accent: #c96442;
+
+  --muted: rgba(28, 26, 22, 0.45);
+  --muted-strong: rgba(28, 26, 22, 0.65);
+  --hairline: rgba(28, 26, 22, 0.08);
+  --hairline-strong: rgba(28, 26, 22, 0.12);
+
+  --ink-contrast: #faf8f3;
+
+  --success: #5c8152;
+  --danger: #b94a2e;
+
+  --outer-bg: #e8e5de;
+}
