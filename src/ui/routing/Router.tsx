@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { AppShell, BottomNav, Sidebar, type SidebarNavItem } from '@ds/layout';
@@ -14,6 +15,12 @@ export function Router() {
   const navigate = useNavigate();
   const cart = useCart();
   const path = location.pathname;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.querySelectorAll('main').forEach((m) => m.scrollTo(0, 0));
+  }, [path]);
+
   const isLibraryArea = path === '/' || path.startsWith('/recipes');
   const isShopping = path === '/shopping';
   const isAisles = path === '/aisles';
