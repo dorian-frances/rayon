@@ -1,5 +1,6 @@
 import type { Aisle, AisleId } from '@domain/aisle';
 import type { Category, CategoryId } from '@domain/category';
+import type { Tag, TagId } from '@domain/tag';
 import type { Ingredient, IngredientId } from '@domain/ingredient';
 import type { Recipe, RecipeId } from '@domain/recipe';
 import type { Cart, CartExtra, CartExtraId } from '@domain/cart';
@@ -13,6 +14,7 @@ import type { UserId } from '@domain/user';
 export class InMemoryDatabase {
   readonly aisles = new Map<UserId, Map<AisleId, Aisle>>();
   readonly categories = new Map<UserId, Map<CategoryId, Category>>();
+  readonly tags = new Map<UserId, Map<TagId, Tag>>();
   readonly ingredients = new Map<UserId, Map<IngredientId, Ingredient>>();
   readonly recipes = new Map<UserId, Map<RecipeId, Recipe>>();
   readonly carts = new Map<UserId, Cart>();
@@ -21,6 +23,7 @@ export class InMemoryDatabase {
   ensureUser(userId: UserId): void {
     if (!this.aisles.has(userId)) this.aisles.set(userId, new Map());
     if (!this.categories.has(userId)) this.categories.set(userId, new Map());
+    if (!this.tags.has(userId)) this.tags.set(userId, new Map());
     if (!this.ingredients.has(userId)) this.ingredients.set(userId, new Map());
     if (!this.recipes.has(userId)) this.recipes.set(userId, new Map());
     if (!this.carts.has(userId)) {

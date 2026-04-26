@@ -4,6 +4,7 @@ export type RealtimeTable =
   | 'aisles'
   | 'ingredients'
   | 'categories'
+  | 'tags'
   | 'recipes'
   | 'recipe_ingredients'
   | 'cart_recipes'

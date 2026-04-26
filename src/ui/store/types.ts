@@ -1,5 +1,6 @@
 import type { Aisle } from '@domain/aisle';
 import type { Category } from '@domain/category';
+import type { Tag } from '@domain/tag';
 import type { Ingredient } from '@domain/ingredient';
 import type { Recipe, RecipeId } from '@domain/recipe';
 import type { CartExtra } from '@domain/cart';
@@ -14,6 +15,7 @@ export interface RayonState {
 
   aisles: Aisle[];
   categories: Category[];
+  tags: Tag[];
   ingredients: Ingredient[];
   recipes: Recipe[];
 
@@ -38,6 +40,10 @@ export interface RayonState {
   setCategories: (c: Category[]) => void;
   upsertCategory: (c: Category) => void;
   removeCategory: (id: Category['id']) => void;
+
+  setTags: (t: Tag[]) => void;
+  upsertTag: (t: Tag) => void;
+  removeTag: (id: Tag['id']) => void;
 
   setIngredients: (ing: Ingredient[]) => void;
   upsertIngredient: (ing: Ingredient) => void;

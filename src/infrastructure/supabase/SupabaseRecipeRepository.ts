@@ -5,7 +5,7 @@ import type { RecipeRepository } from '@application/ports/RecipeRepository';
 import { Mappers, recipeStepsToJson, type RecipeWithIngredientsRow } from './mappers';
 
 const SELECT_RECIPE_WITH_INGS =
-  'id, name, image, origin, link, categories, steps, created_at, updated_at, recipe_ingredients(ingredient_id, position)';
+  'id, name, image, link, categories, tags, steps, created_at, updated_at, recipe_ingredients(ingredient_id, position)';
 
 export class SupabaseRecipeRepository implements RecipeRepository {
   constructor(private readonly db: SupabaseClient) {}
@@ -37,9 +37,9 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       user_id: userId,
       name: recipe.name,
       image: recipe.image,
-      origin: recipe.origin,
       link: recipe.link,
       categories: recipe.categories as unknown as string[],
+      tags: recipe.tags as unknown as string[],
       steps: recipeStepsToJson(recipe.steps),
     });
     if (upsertErr) throw upsertErr;

@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import type { Recipe } from '@domain/recipe';
 import type { Category } from '@domain/category';
+import type { Tag as TagEntity } from '@domain/tag';
 import { FoodImage, Tag } from '@ds/primitives';
 import { CheckIcon, PlusIcon } from '@ds/icons';
 import { cn } from '@ds/utils/cn';
@@ -8,20 +9,34 @@ import { cn } from '@ds/utils/cn';
 export interface RecipeCardProps {
   recipe: Recipe;
   categories: readonly Category[];
+  tags: readonly TagEntity[];
   inCart: boolean;
   onOpen: () => void;
   onToggleCart: () => void;
   className?: string;
 }
 
+const MAX_BADGES = 3;
+
 export function RecipeCard({
   recipe,
   categories,
+  tags,
   inCart,
   onOpen,
   onToggleCart,
   className,
 }: RecipeCardProps) {
+  const catBadges = recipe.categories
+    .map((cid) => categories.find((c) => c.id === cid))
+    .filter((c): c is Category => Boolean(c));
+  const tagBadges = recipe.tags
+    .map((tid) => tags.find((t) => t.id === tid))
+    .filter((t): t is TagEntity => Boolean(t));
+
+  const all = [...catBadges, ...tagBadges].slice(0, MAX_BADGES);
+  const overflow = catBadges.length + tagBadges.length - all.length;
+
   return (
     <motion.button
       type="button"
@@ -37,11 +52,6 @@ export function RecipeCard({
     >
       <div className="relative aspect-[1.1] shrink-0">
         <FoodImage name={recipe.name} src={recipe.image} className="w-full h-full" />
-        {recipe.origin ? (
-          <div className="absolute top-2.5 left-2.5 h-[26px] px-2 rounded-[13px] bg-[rgba(250,248,243,0.9)] backdrop-blur-[8px] flex items-center text-[13px]">
-            {recipe.origin}
-          </div>
-        ) : null}
         <button
           type="button"
           onClick={(e) => {
@@ -65,14 +75,23 @@ export function RecipeCard({
           {recipe.name}
         </div>
         <div className="flex gap-1 flex-wrap">
-          {recipe.categories.slice(0, 2).map((cid) => {
-            const cat = categories.find((c) => c.id === cid);
+          {all.map((entity) => {
+            const isCat = 'color' in entity;
             return (
-              <Tag key={cid} size="sm" color={cat?.color ?? '#E8DCC4'}>
-                {cat?.label ?? '—'}
+              <Tag
+                key={entity.id}
+                size="sm"
+                color={isCat ? (entity as Category).color : '#F0E6D4'}
+              >
+                {entity.label}
               </Tag>
             );
           })}
+          {overflow > 0 ? (
+            <Tag size="sm" color="rgba(28,26,22,0.06)">
+              +{overflow}
+            </Tag>
+          ) : null}
         </div>
       </div>
     </motion.button>

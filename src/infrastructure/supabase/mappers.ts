@@ -1,5 +1,6 @@
 import { Aisle, AisleId } from '@domain/aisle';
 import { Category, CategoryId } from '@domain/category';
+import { Tag, TagId } from '@domain/tag';
 import { Ingredient, IngredientId } from '@domain/ingredient';
 import { Recipe, RecipeId, type RecipeStep, type RecipeStepKind } from '@domain/recipe';
 import { CartExtraId, type CartExtra } from '@domain/cart';
@@ -17,6 +18,11 @@ export interface CategoryRow {
   color: string;
 }
 
+export interface TagRow {
+  id: string;
+  label: string;
+}
+
 export interface IngredientRow {
   id: string;
   name: string;
@@ -27,9 +33,9 @@ export interface RecipeRow {
   id: string;
   name: string;
   image: string | null;
-  origin: string | null;
   link: string | null;
   categories: string[] | null;
+  tags: string[] | null;
   steps: unknown;
   created_at: string;
   updated_at: string;
@@ -58,6 +64,9 @@ export const Mappers = {
   category(row: CategoryRow): Category {
     return { id: CategoryId.of(row.id), label: row.label, color: row.color };
   },
+  tag(row: TagRow): Tag {
+    return { id: TagId.of(row.id), label: row.label };
+  },
   ingredient(row: IngredientRow): Ingredient {
     return {
       id: IngredientId.of(row.id),
@@ -77,9 +86,9 @@ export const Mappers = {
       id: RecipeId.of(row.id),
       name: row.name,
       image: row.image,
-      origin: row.origin,
       link: row.link,
       categories: (row.categories ?? []).map((c) => CategoryId.of(c)),
+      tags: (row.tags ?? []).map((t) => TagId.of(t)),
       ingredients: ingredientIds,
       steps,
       createdAt: new Date(row.created_at),

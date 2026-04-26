@@ -2,6 +2,7 @@ import type { AisleRepository } from '@application/ports/AisleRepository';
 import type { AuthGateway } from '@application/ports/AuthGateway';
 import type { CartRepository } from '@application/ports/CartRepository';
 import type { CategoryRepository } from '@application/ports/CategoryRepository';
+import type { TagRepository } from '@application/ports/TagRepository';
 import type { Clock } from '@application/ports/Clock';
 import type { IdGenerator } from '@application/ports/IdGenerator';
 import type { IngredientRepository } from '@application/ports/IngredientRepository';
@@ -18,6 +19,11 @@ import { createCategory } from '@application/use-cases/category/createCategory';
 import { listCategories } from '@application/use-cases/category/listCategories';
 import { renameCategory } from '@application/use-cases/category/renameCategory';
 import { deleteCategory } from '@application/use-cases/category/deleteCategory';
+
+import { createTag } from '@application/use-cases/tag/createTag';
+import { listTags } from '@application/use-cases/tag/listTags';
+import { renameTag } from '@application/use-cases/tag/renameTag';
+import { deleteTag } from '@application/use-cases/tag/deleteTag';
 
 import { listIngredients } from '@application/use-cases/ingredient/listIngredients';
 import { searchIngredients } from '@application/use-cases/ingredient/searchIngredients';
@@ -54,6 +60,7 @@ import {
   InMemoryAuthGateway,
   InMemoryCartRepository,
   InMemoryCategoryRepository,
+  InMemoryTagRepository,
   InMemoryDatabase,
   InMemoryIngredientRepository,
   InMemoryRealtimeGateway,
@@ -66,6 +73,7 @@ import {
   SupabaseAuthGateway,
   SupabaseCartRepository,
   SupabaseCategoryRepository,
+  SupabaseTagRepository,
   SupabaseIngredientRepository,
   SupabaseRealtimeGateway,
   SupabaseRecipeRepository,
@@ -75,6 +83,7 @@ import { CryptoIdGenerator, SystemClock } from '@infrastructure/system';
 export interface Adapters {
   readonly aisles: AisleRepository;
   readonly categories: CategoryRepository;
+  readonly tags: TagRepository;
   readonly ingredients: IngredientRepository;
   readonly recipes: RecipeRepository;
   readonly cart: CartRepository;
@@ -97,6 +106,12 @@ export interface UseCases {
     create: ReturnType<typeof createCategory>;
     rename: ReturnType<typeof renameCategory>;
     delete: ReturnType<typeof deleteCategory>;
+  };
+  tags: {
+    list: ReturnType<typeof listTags>;
+    create: ReturnType<typeof createTag>;
+    rename: ReturnType<typeof renameTag>;
+    delete: ReturnType<typeof deleteTag>;
   };
   ingredients: {
     list: ReturnType<typeof listIngredients>;
@@ -152,6 +167,12 @@ function wireUseCases(adapters: Adapters): UseCases {
       rename: renameCategory(adapters.categories),
       delete: deleteCategory(adapters.categories),
     },
+    tags: {
+      list: listTags(adapters.tags),
+      create: createTag(adapters.tags, adapters.ids),
+      rename: renameTag(adapters.tags),
+      delete: deleteTag(adapters.tags),
+    },
     ingredients: {
       list: listIngredients(adapters.ingredients),
       search: searchIngredients(adapters.ingredients),
@@ -195,6 +216,7 @@ export function createInMemoryContainer(): Container {
   const adapters: Adapters = {
     aisles: new InMemoryAisleRepository(db),
     categories: new InMemoryCategoryRepository(db),
+    tags: new InMemoryTagRepository(db),
     ingredients: new InMemoryIngredientRepository(db),
     recipes: new InMemoryRecipeRepository(db),
     cart: new InMemoryCartRepository(db),
@@ -215,6 +237,7 @@ export function createSupabaseContainer(): Container {
   const adapters: Adapters = {
     aisles: new SupabaseAisleRepository(client),
     categories: new SupabaseCategoryRepository(client),
+    tags: new SupabaseTagRepository(client),
     ingredients: new SupabaseIngredientRepository(client),
     recipes: new SupabaseRecipeRepository(client),
     cart: new SupabaseCartRepository(client),

@@ -1,6 +1,7 @@
 export * from './AisleRepository';
 export * from './IngredientRepository';
 export * from './CategoryRepository';
+export * from './TagRepository';
 export * from './RecipeRepository';
 export * from './CartRepository';
 export * from './AuthGateway';

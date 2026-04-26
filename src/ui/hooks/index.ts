@@ -5,5 +5,6 @@ export { useRecipes } from './useRecipes';
 export { useIngredients } from './useIngredients';
 export { useAisles } from './useAisles';
 export { useCategories } from './useCategories';
+export { useTags } from './useTags';
 export { useCart } from './useCart';
 export { useTheme } from './useTheme';

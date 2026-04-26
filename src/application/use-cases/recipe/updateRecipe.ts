@@ -4,15 +4,16 @@ import type { UserId } from '@domain/user';
 import type { RecipeRepository } from '@application/ports/RecipeRepository';
 import type { Clock } from '@application/ports/Clock';
 import type { CategoryId } from '@domain/category';
+import type { TagId } from '@domain/tag';
 import type { IngredientId } from '@domain/ingredient';
 import type { RecipeStep } from '@domain/recipe';
 
 export interface UpdateRecipeInput {
   name?: string;
   image?: string | null;
-  origin?: string | null;
   link?: string | null;
   categories?: readonly CategoryId[];
+  tags?: readonly TagId[];
   ingredients?: readonly IngredientId[];
   steps?: readonly RecipeStep[];
 }

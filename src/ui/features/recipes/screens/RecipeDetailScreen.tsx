@@ -17,6 +17,7 @@ export function RecipeDetailScreen() {
   const aisles = useRayonStore((s) => s.aisles);
   const ingredients = useRayonStore((s) => s.ingredients);
   const categories = useRayonStore((s) => s.categories);
+  const tagsList = useRayonStore((s) => s.tags);
   const cart = useCart();
 
   const ingredientsByAisle = useMemo(() => {
@@ -85,12 +86,19 @@ export function RecipeDetailScreen() {
       <Container width="default" className="-mt-10 md:-mt-14 relative">
         <div className="bg-card rounded-[20px] border border-[var(--hairline)] shadow-[var(--shadow-card-soft)] p-6 md:p-9">
           <div className="flex gap-2 mb-3.5 flex-wrap">
-            {recipe.origin ? <Tag color="#F0E6D4">{recipe.origin} Origine</Tag> : null}
             {recipe.categories.map((cid) => {
               const cat = categories.find((c) => c.id === cid);
               return (
                 <Tag key={cid} color={cat?.color ?? '#E8DCC4'}>
                   {cat?.label ?? '—'}
+                </Tag>
+              );
+            })}
+            {recipe.tags.map((tid) => {
+              const t = tagsList.find((x) => x.id === tid);
+              return (
+                <Tag key={tid} color="#F0E6D4">
+                  {t?.label ?? '—'}
                 </Tag>
               );
             })}

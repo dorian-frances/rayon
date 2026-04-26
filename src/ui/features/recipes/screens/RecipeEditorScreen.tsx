@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, IconButton } from '@ds/primitives';
 import { XIcon } from '@ds/icons';
@@ -7,37 +7,34 @@ import { useRecipes } from '@/ui/hooks/useRecipes';
 import { useRayonStore } from '@/ui/store';
 import { selectRecipeById } from '@/ui/store/selectors';
 import type { CategoryId } from '@domain/category';
+import type { TagId } from '@domain/tag';
 import type { IngredientId } from '@domain/ingredient';
 import { type RecipeId } from '@domain/recipe';
 import { Field } from '../components/Field';
 import { CategoryPicker } from '../components/CategoryPicker';
-import { OriginPicker } from '../components/OriginPicker';
+import { TagPicker } from '../components/TagPicker';
 import { IngredientPicker } from '../components/IngredientPicker';
 
 export function RecipeEditorScreen() {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const existing = useRayonStore((s) => (id ? selectRecipeById(s, id) : undefined));
-  const recipes = useRayonStore((s) => s.recipes);
   const categories = useRayonStore((s) => s.categories);
+  const tags = useRayonStore((s) => s.tags);
   const { create, update } = useRecipes();
 
   const [name, setName] = useState(existing?.name ?? '');
   const [selectedCats, setSelectedCats] = useState<CategoryId[]>(
     existing?.categories ? [...existing.categories] : []
   );
-  const [origin, setOrigin] = useState(existing?.origin ?? '');
+  const [selectedTags, setSelectedTags] = useState<TagId[]>(
+    existing?.tags ? [...existing.tags] : []
+  );
   const [link, setLink] = useState(existing?.link ?? '');
   const [image, setImage] = useState(existing?.image ?? '');
   const [selectedIngs, setSelectedIngs] = useState<IngredientId[]>(
     existing?.ingredients ? [...existing.ingredients] : []
   );
-
-  const existingOrigins = useMemo(() => {
-    const set = new Set<string>();
-    for (const r of recipes) if (r.origin) set.add(r.origin);
-    return [...set];
-  }, [recipes]);
 
   const canSave = name.trim().length > 0 && selectedIngs.length > 0;
 
@@ -47,7 +44,7 @@ export function RecipeEditorScreen() {
       const updated = await update(existing.id, {
         name: name.trim(),
         categories: selectedCats,
-        origin: origin || null,
+        tags: selectedTags,
         link: link || null,
         image: image.trim() || null,
         ingredients: selectedIngs,
@@ -57,7 +54,7 @@ export function RecipeEditorScreen() {
       const created = await create({
         name: name.trim(),
         categories: selectedCats,
-        origin: origin || null,
+        tags: selectedTags,
         link: link || null,
         image: image.trim() || null,
         ingredients: selectedIngs,
@@ -105,13 +102,13 @@ export function RecipeEditorScreen() {
           </Field>
 
           <Field
-            label="Origine"
-            hint="Astuce : utilise un emoji drapeau (🇫🇷 🇮🇹…) ou simplement du texte."
+            label="Tags"
+            hint="Origine, régime, saison, texture… Utilise un emoji drapeau (🇫🇷 🇮🇹…) ou un libellé libre. Plusieurs tags possibles."
           >
-            <OriginPicker
-              value={origin}
-              onChange={setOrigin}
-              existingOrigins={existingOrigins}
+            <TagPicker
+              tags={tags}
+              selected={selectedTags}
+              onChange={setSelectedTags}
             />
           </Field>
 

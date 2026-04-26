@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { CategoryId } from '@domain/category';
+import type { TagId } from '@domain/tag';
 import { Button, EmptyState } from '@ds/primitives';
 import { PlusIcon } from '@ds/icons';
 import { useIsDesktop } from '@ds/utils/useMediaQuery';
@@ -13,23 +14,34 @@ import { RecipeFilters } from '../components/RecipeFilters';
 export function LibraryScreen() {
   const recipes = useRayonStore((s) => s.recipes);
   const categories = useRayonStore((s) => s.categories);
+  const tags = useRayonStore((s) => s.tags);
   const cart = useCart();
   const isDesktop = useIsDesktop();
   const navigate = useNavigate();
 
   const [query, setQuery] = useState('');
   const [categoryId, setCategoryId] = useState<string>('all');
-  const [origin, setOrigin] = useState<string>('');
+  const [activeTagIds, setActiveTagIds] = useState<TagId[]>([]);
 
   const filtered = useMemo(() => {
     return recipes.filter((r) => {
       if (query && !r.name.toLowerCase().includes(query.toLowerCase())) return false;
       if (categoryId !== 'all' && !r.categories.includes(categoryId as CategoryId))
         return false;
-      if (origin && r.origin !== origin) return false;
+      if (activeTagIds.length > 0) {
+        // Toutes les tags actives doivent être présentes (intersection)
+        for (const tid of activeTagIds) {
+          if (!r.tags.includes(tid)) return false;
+        }
+      }
       return true;
     });
-  }, [recipes, query, categoryId, origin]);
+  }, [recipes, query, categoryId, activeTagIds]);
+
+  const toggleTag = (id: TagId) =>
+    setActiveTagIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
 
   return (
     <div className="pb-24 md:pb-12">
@@ -59,10 +71,11 @@ export function LibraryScreen() {
           onQueryChange={setQuery}
           categoryId={categoryId}
           onCategoryChange={setCategoryId}
-          origin={origin}
-          onOriginChange={setOrigin}
+          activeTagIds={activeTagIds}
+          onToggleTag={toggleTag}
           recipes={recipes}
           categories={categories}
+          tags={tags}
           isDesktop={isDesktop}
         />
 
@@ -94,6 +107,7 @@ export function LibraryScreen() {
                 key={r.id}
                 recipe={r}
                 categories={categories}
+                tags={tags}
                 inCart={cart.inCart(r.id)}
                 onOpen={() => navigate(`/recipes/${r.id}`)}
                 onToggleCart={() => cart.toggleRecipe(r.id)}

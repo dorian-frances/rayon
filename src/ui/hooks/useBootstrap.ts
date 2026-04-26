@@ -3,7 +3,7 @@ import { useUseCases } from '@composition/ContainerProvider';
 import { useRayonStore } from '@/ui/store';
 
 /**
- * Au login, charge en parallèle les 6 collections de l'utilisateur dans le store.
+ * Au login, charge en parallèle les collections de l'utilisateur dans le store.
  * Le hook `useAuth` a déjà hydraté `user`.
  */
 export function useBootstrap() {
@@ -12,6 +12,7 @@ export function useBootstrap() {
   const setHydrated = useRayonStore((s) => s.setHydrated);
   const setAisles = useRayonStore((s) => s.setAisles);
   const setCategories = useRayonStore((s) => s.setCategories);
+  const setTags = useRayonStore((s) => s.setTags);
   const setIngredients = useRayonStore((s) => s.setIngredients);
   const setRecipes = useRayonStore((s) => s.setRecipes);
   const setCart = useRayonStore((s) => s.setCart);
@@ -25,14 +26,16 @@ export function useBootstrap() {
     Promise.all([
       uc.aisles.list(user.id),
       uc.categories.list(user.id),
+      uc.tags.list(user.id),
       uc.ingredients.list(user.id),
       uc.recipes.list(user.id),
       uc.cart.get(user.id),
     ])
-      .then(([aisles, categories, ingredients, recipes, cart]) => {
+      .then(([aisles, categories, tags, ingredients, recipes, cart]) => {
         if (cancelled) return;
         setAisles(aisles);
         setCategories(categories);
+        setTags(tags);
         setIngredients(ingredients);
         setRecipes(recipes);
         setCart({
@@ -55,6 +58,7 @@ export function useBootstrap() {
     uc,
     setAisles,
     setCategories,
+    setTags,
     setIngredients,
     setRecipes,
     setCart,

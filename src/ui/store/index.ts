@@ -14,6 +14,9 @@ const initial: Omit<
   | 'setCategories'
   | 'upsertCategory'
   | 'removeCategory'
+  | 'setTags'
+  | 'upsertTag'
+  | 'removeTag'
   | 'setIngredients'
   | 'upsertIngredient'
   | 'removeIngredient'
@@ -36,6 +39,7 @@ const initial: Omit<
   hydrated: false,
   aisles: [],
   categories: [],
+  tags: [],
   ingredients: [],
   recipes: [],
   cartRecipeIds: [],
@@ -76,6 +80,24 @@ export const useRayonStore = create<RayonState>()(
         }),
       removeCategory: (id) =>
         set((s) => ({ categories: s.categories.filter((c) => c.id !== id) })),
+
+      setTags: (tags) => set({ tags }),
+      upsertTag: (t) =>
+        set((s) => {
+          const idx = s.tags.findIndex((x) => x.id === t.id);
+          if (idx < 0) return { tags: [...s.tags, t] };
+          const next = [...s.tags];
+          next[idx] = t;
+          return { tags: next };
+        }),
+      removeTag: (id) =>
+        set((s) => ({
+          tags: s.tags.filter((t) => t.id !== id),
+          recipes: s.recipes.map((r) => ({
+            ...r,
+            tags: r.tags.filter((x) => x !== id),
+          })),
+        })),
 
       setIngredients: (ingredients) => set({ ingredients }),
       upsertIngredient: (ing) =>
@@ -164,6 +186,7 @@ export const useRayonStore = create<RayonState>()(
         theme: state.theme,
         aisles: state.aisles,
         categories: state.categories,
+        tags: state.tags,
         ingredients: state.ingredients,
         recipes: state.recipes,
         cartRecipeIds: state.cartRecipeIds,
