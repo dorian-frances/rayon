@@ -181,7 +181,29 @@ export const useRayonStore = create<RayonState>()(
     }),
     {
       name: 'rayon-state-v1',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      // Migration : ancien cache (avant le refactor origin → tags) ne contient
+      // ni `tags` (slice top-level) ni `recipe.tags`. On les hydrate à vide ;
+      // le bootstrap remplacera ensuite par les données fraîches de Supabase.
+      migrate: (persistedState, version) => {
+        const s = (persistedState ?? {}) as Record<string, unknown>;
+        if (version < 2) {
+          const recipes = Array.isArray(s.recipes) ? (s.recipes as unknown[]) : [];
+          return {
+            ...s,
+            tags: Array.isArray(s.tags) ? s.tags : [],
+            recipes: recipes.map((r) => {
+              const rec = (r ?? {}) as Record<string, unknown>;
+              return {
+                ...rec,
+                tags: Array.isArray(rec.tags) ? rec.tags : [],
+              };
+            }),
+          } as unknown as RayonState;
+        }
+        return persistedState as RayonState;
+      },
       partialize: (state) => ({
         theme: state.theme,
         aisles: state.aisles,
