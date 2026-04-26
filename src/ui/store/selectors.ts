@@ -1,6 +1,6 @@
 import { sortByPosition, type Aisle } from '@domain/aisle';
 import type { Ingredient, IngredientId } from '@domain/ingredient';
-import type { Recipe } from '@domain/recipe';
+import type { Recipe, RecipeId } from '@domain/recipe';
 import type { CartExtra } from '@domain/cart';
 import type { RayonState } from './types';
 
@@ -9,6 +9,8 @@ export interface ShoppingItemRow {
   readonly name: string;
   readonly checked: boolean;
   readonly source: 'recipe' | 'extra';
+  /** Noms des recettes du panier qui requièrent cet ingrédient (vide pour les extras). */
+  readonly recipeNames: readonly string[];
 }
 
 export interface AisleSectionView {
@@ -27,10 +29,23 @@ export function buildCartItemsByAisle(
   aisles: readonly Aisle[],
   ingredients: readonly Ingredient[],
   cartItems: Record<string, { checked: boolean }>,
-  cartExtras: readonly CartExtra[]
+  cartExtras: readonly CartExtra[],
+  recipes: readonly Recipe[],
+  cartRecipeIds: readonly RecipeId[]
 ): AisleSectionView[] {
   const ingById = new Map<IngredientId, Ingredient>();
   for (const i of ingredients) ingById.set(i.id, i);
+
+  const cartRecipeIdSet = new Set<RecipeId>(cartRecipeIds);
+  const recipeNamesByIngredient = new Map<IngredientId, string[]>();
+  for (const recipe of recipes) {
+    if (!cartRecipeIdSet.has(recipe.id)) continue;
+    for (const ingId of recipe.ingredients) {
+      const arr = recipeNamesByIngredient.get(ingId) ?? [];
+      arr.push(recipe.name);
+      recipeNamesByIngredient.set(ingId, arr);
+    }
+  }
 
   const byAisle = new Map<string, ShoppingItemRow[]>();
 
@@ -39,11 +54,15 @@ export function buildCartItemsByAisle(
     if (!ing) continue;
     const aid = ing.aisleId as string;
     const arr = byAisle.get(aid) ?? [];
+    const recipeNames = (recipeNamesByIngredient.get(ing.id) ?? [])
+      .slice()
+      .sort((a, b) => a.localeCompare(b));
     arr.push({
       id: ing.id,
       name: ing.name,
       checked: info.checked,
       source: 'recipe',
+      recipeNames,
     });
     byAisle.set(aid, arr);
   }
@@ -56,6 +75,7 @@ export function buildCartItemsByAisle(
       name: extra.name,
       checked: extra.checked,
       source: 'extra',
+      recipeNames: [],
     });
     byAisle.set(aid, arr);
   }

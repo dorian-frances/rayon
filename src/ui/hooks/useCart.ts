@@ -14,13 +14,22 @@ export function useCart() {
 
   const aisles = useRayonStore((s) => s.aisles);
   const ingredients = useRayonStore((s) => s.ingredients);
+  const recipes = useRayonStore((s) => s.recipes);
   const cartRecipeIds = useRayonStore((s) => s.cartRecipeIds);
   const cartItems = useRayonStore((s) => s.cartItems);
   const cartExtras = useRayonStore((s) => s.cartExtras);
 
   const groups = useMemo(
-    () => buildCartItemsByAisle(aisles, ingredients, cartItems, cartExtras),
-    [aisles, ingredients, cartItems, cartExtras]
+    () =>
+      buildCartItemsByAisle(
+        aisles,
+        ingredients,
+        cartItems,
+        cartExtras,
+        recipes,
+        cartRecipeIds
+      ),
+    [aisles, ingredients, cartItems, cartExtras, recipes, cartRecipeIds]
   );
   const stats = useMemo(
     () => buildCartStats(groups, cartRecipeIds.length),

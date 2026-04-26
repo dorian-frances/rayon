@@ -17,15 +17,25 @@ export function ShoppingRow({ item, onToggle }: ShoppingRowProps) {
       <Checkbox checked={item.checked} onChange={onToggle} />
       <span
         className={cn(
-          'flex-1 text-base transition-all duration-200',
+          'flex-1 min-w-0 text-base transition-all duration-200',
           item.checked ? 'text-[var(--muted)] line-through' : 'text-ink'
         )}
       >
         {item.name}
       </span>
       {item.source === 'extra' ? (
-        <span className="text-[10px] tracking-[0.1em] uppercase text-[var(--muted)]">
+        <span className="text-[10px] tracking-[0.1em] uppercase text-[var(--muted)] shrink-0">
           hors recette
+        </span>
+      ) : item.recipeNames.length > 0 ? (
+        <span
+          className={cn(
+            'text-[11px] text-[var(--muted)] text-right max-w-[45%] truncate shrink-0',
+            item.checked && 'line-through'
+          )}
+          title={item.recipeNames.join(', ')}
+        >
+          {item.recipeNames.join(', ')}
         </span>
       ) : null}
     </button>
